@@ -1,0 +1,85 @@
+#!/usr/bin/env node
+
+const { exec } = require("child_process");
+// const chalk = require("chalk");
+// const ora = require("ora");
+
+// Function to fetch dependencies recursively
+async function getDependencyTree(packageName, depth = 0, visited = new Set()) {
+  if (visited.has(packageName)) {
+    return null; // Avoid circular dependencies
+  }
+  visited.add(packageName);
+
+//   const spinner = ora(`${"  ".repeat(depth)}Fetching ${packageName}...`).start();
+  console.log(`${"  ".repeat(depth)}Fetching ${packageName}...`);
+  return new Promise((resolve) => {
+    exec(`npm info ${packageName} dependencies --json`, (error, stdout, stderr) => {
+    //   spinner.stop();
+
+      if (error || stderr) {
+        // console.error(chalk.red(`${"  ".repeat(depth)}Error fetching ${packageName}`));
+        console.error(`${"  ".repeat(depth)}Error fetching ${packageName}`);
+        resolve(null);
+        return;
+      }
+
+      let dependencies;
+      try {
+        dependencies = JSON.parse(stdout || "{}");
+      } catch (err) {
+        // console.error(chalk.red(`${"  ".repeat(depth)}Failed to parse dependencies for ${packageName}`));
+        console.error(`${"  ".repeat(depth)}Failed to parse dependencies for ${packageName}`);
+        resolve(null);
+        return;
+      }
+
+      if (!dependencies || Object.keys(dependencies).length === 0) {
+        resolve({ name: packageName, dependencies: {} });
+        return;
+      }
+
+    //   console.log(chalk.green(`${"  ".repeat(depth)}${packageName}`));
+      console.log(`${"  ".repeat(depth)}${packageName}`);
+
+      // Fetch dependencies recursively
+      const promises = Object.entries(dependencies).map(async ([dep, version]) => {
+        return getDependencyTree(dep, depth + 1, visited);
+      });
+
+      Promise.all(promises).then((results) => {
+        const depTree = {};
+        results.forEach((res) => {
+          if (res) depTree[res.name] = res.dependencies;
+        });
+
+        resolve({ name: packageName, dependencies: depTree });
+      });
+    });
+  });
+}
+
+// Function to print dependency tree
+function printTree(tree, depth = 0) {
+//   console.log(`${"  ".repeat(depth)}- ${chalk.blue(tree.name)}`);
+  console.log(`${"  ".repeat(depth)}- ${tree.name}`);
+  Object.values(tree.dependencies).forEach((subTree) => {
+    printTree(subTree, depth + 1);
+  });
+}
+
+// Get package name from command-line args
+const packageName = process.argv[2];
+
+if (!packageName) {
+//   console.error(chalk.red("Usage: node index.js <package-name>"));
+  console.error("Usage: node index.js <package-name>");
+  process.exit(1);
+}
+
+// Fetch and display the full dependency tree
+getDependencyTree(packageName).then((tree) => {
+//   console.log(chalk.yellow("\nFull Dependency Tree:\n"));
+  console.log("\nFull Dependency Tree:\n");
+  printTree(tree);
+});
