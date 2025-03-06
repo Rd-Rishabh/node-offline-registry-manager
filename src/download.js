@@ -163,14 +163,10 @@ async function main() {
     await fetchDependenciesTree(packageName, version);
     console.timeEnd('Time to fetch dependencies');
     
-    console.time('Time to download dependencies');
     await downloadPackages(packageName, version);
-    console.timeEnd('Time to download dependencies');
 }
 
 // main().catch(console.error);
 
-console.time('Total Time');
 await main().catch(console.error);
-console.timeEnd('Total Time');
 
