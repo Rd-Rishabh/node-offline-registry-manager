@@ -1,5 +1,5 @@
 const config  = {
-    registryUrl: "https://registry.npmjs.org/",
+    npmRegistryUrl: "https://registry.npmjs.org/",
 };
 
 export default config;

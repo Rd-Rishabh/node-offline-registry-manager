@@ -1,20 +1,26 @@
 {
   "name": "offline-registry-manager",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "1.1.0",
+  "main": "./bin/cli.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "tar": "tar -czvf offline-registry-manager.tgz bin node_modules src config.js package.json package-lock.json"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
     "pack-pub": "./bin/cli.js"
   },
   "keywords": [],
   "author": "Rishabh Dogra",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rd-Rishabh/node-offline-registry-manager"
+  },
   "description": "A simple tool to manage offline registry such as Verdaccio",
   "dependencies": {
+    "commander": "^13.1.0",
+    "pretty-ms": "^9.2.0",
     "semver": "^7.7.1"
-  }
+  },
+  "bundleDependencies": true
 }
