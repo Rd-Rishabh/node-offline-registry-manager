@@ -19,7 +19,8 @@
     "publish",
     "dependencies",
     "tarball",
-    "verdaccio"
+    "verdaccio",
+    "pack-pub"
   ],
   "author": {
     "name": "Rishabh Dogra",

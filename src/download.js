@@ -111,7 +111,7 @@ async function downloadPackages(packName, version) {
 
     
     const size = downloadList.size;
-    const downloadDir = `.\\${simplifyPackageName(packName)}-${version}-tars`;
+    const downloadDir = join('.',`${simplifyPackageName(packName)}-${version}-tars`);
     let i = 1;
     let downloadPromises = [];
 

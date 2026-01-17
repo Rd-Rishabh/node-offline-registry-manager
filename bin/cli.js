@@ -30,32 +30,41 @@ program
   .action((packageName, version, options) => {
     packTars(packageName, version, options)
   });
-  
-  // `publish-tars` command
-  program
+
+// `publish-tars` command
+program
   .command('publish-tars <directory>')
   .description('Publish tarballs from a directory to an offline registry.')
   // .option('-r, --registry <url>', 'registry URL to publish to')
   .option('-v, --verbose', 'gives detailed output')
   .action(publishTarballs);
-  
-  // `pack-offline` command
-  program
+
+// `pack-offline` command
+program
   .command('pack-offline <packageName> [version]')
   .description('Prepare packages for offline use without need of a registry.')
   .option('-v, --verbose', 'gives detailed output')
   .action((packageName, version, options) => {
     packOffline(packageName, version, options);
   });
-  
-  // `install-offline` command
-  program
+
+// `install-offline` command
+program
   .command('install-offline <directory>')
-  .description('Install package from directory created using "pack-offline" command')
+  .description('Install package from directory created using "pack-offline" or "download-verdaccio" command')
   .option('-g, --global', 'installs the package globally')
   .option('-v, --verbose', 'gives detailed output')
   .action((directory, options) => {
     installOffline(directory, options)
+  });
+
+// `download-verdaccio` command
+program
+  .command('download-verdaccio [version]')
+  .description('Downloads verdaccio for offline use with all its dependencies. Internally uses pack-offline')
+  .option('-v, --verbose', 'gives detailed output')
+  .action((version, options) => {
+    packOffline('verdaccio', version, options);
   });
 
 program.parse(process.argv);
